@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Hello WebSocket</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<style>
+    .user-wrap {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        padding-left: 10px;
+        border: solid 1px black;
+    }
+    .connect {
+        background-color: aqua;
+        border-radius: 10px;
+        padding: 10px;
+        border: 0px !important;
+        cursor: pointer;
+    }
+    .column {
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+    }
+    .messanger {
+        margin-top: 10px;
+        border: solid black 1px;
+        padding: 10px;
+    }
+    .wall {
+        margin-left: 10px;
+        margin-top: 45px;
+        border: solid black 1px;
+        padding: 10px;
+    }
+    .posts {
+        margin-top: 10px;
+        border: solid black 1px;
+        padding: 10px;
+    }
+    .field {
+        margin-top: 5px;
+        padding: 5px;
+    }
+    .btn-send {
+        margin-top: 5px;
+        border: 0px !important;
+        background-color: lightgreen;
+        padding: 5px;
+        cursor: pointer;
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+    }
+    .chatroom {
+        border: solid 1px black;
+    }
+</style>
+<body>
+<div id="main-content" class="container">
+    <div class="row user-wrap">
+
+        <!-- ALEXOV -->
+        <div class="row">
+            <div class="col-md-4">
+
+                <!-- connect button -->
+                <button id="connect-user-alexov" class="btn btn-default connect" type="submit">Connect how alexov</button>
+
+                <!-- messages -->
+                <div class="messanger">
+                    <h4> Messages </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="name-recipient-alexov" placeholder="RecipientName if first">
+                        <input class="field" type="text" id="content-alexov" placeholder="Content">
+                        <input class="field" type="text" id="id-chat-alexov" placeholder="ChatId if exists">
+                        <div class="column">
+                            <input class="field" type="file" id="content-message-alexov" placeholder="Post content">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-first-alexov"> send first message </button>
+                    </div>
+                </div>
+                <!-- posts -->
+                <div class="posts">
+                    <h4> posts </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="content-post-alexov" placeholder="Post content">
+                        <input class="field" type="file" id="content-media-alexov" placeholder="Content">
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-post-alexov"> send post </button>
+                    </div>
+                </div>
+                <button class="btn btn-default btn-send" id="subscribe-john-alexov"> subscribe john </button>
+                <button class="btn btn-default btn-send" id="subscribe-mark-alexov"> subscribe mark </button>
+            </div>
+            <!-- My wall -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> wall </h4>
+                    <div id="posts-alexov">
+                    </div>
+                </div>
+            </div>
+            <!-- My feed -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> feed </h4>
+                    <div id="feed-alexov">
+                    </div>
+                </div>
+            </div>
+            <!-- My chatRooms -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> Chatrooms </h4>
+                    <div id="chatrooms-alexov">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JOHN -->
+    <div class="row user-wrap">
+        <div class="row">
+            <div class="col-md-4">
+                <button id="connect-user-john" class="btn btn-default connect" type="submit">Connect how john</button>
+                <!-- messages -->
+                <div class="messanger">
+                    <h4> Messages </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="name-recipient-john" placeholder="RecipientName if first">
+                        <input class="field" type="text" id="content-john" placeholder="Content">
+                        <input class="field" type="text" id="id-chat-john" placeholder="ChatId if exists">
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-first-john"> send first message </button>
+                        <button class="btn btn-default btn-send" id="send-next-john"> send next message </button>
+                    </div>
+                </div>
+                <!-- posts -->
+                <div class="posts">
+                    <h4> posts </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="content-post-john" placeholder="Post content">
+                        <input class="field" type="file" id="content-media-john" placeholder="Content">
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-post-john"> send post </button>
+                    </div>
+                </div>
+                <button class="btn btn-default btn-send" id="subscribe-alexov-john"> subscribe john </button>
+                <button class="btn btn-default btn-send" id="subscribe-mark-jhon"> subscribe mark </button>
+            </div>
+            <!-- My wall -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> wall </h4>
+                    <div id="posts-john">
+                    </div>
+                </div>
+            </div>
+            <!-- My feed -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> feed </h4>
+                    <div id="feed-john">
+                    </div>
+                </div>
+            </div>
+            <!-- My chatRooms -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> Chatrooms </h4>
+                    <div id="chatrooms-john">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MARK -->
+    <div class="row user-wrap">
+        <div class="row">
+            <div class="col-md-4">
+                <button id="connect-user-mark" class="btn btn-default connect" type="submit">Connect how mark</button>
+                <!-- messages -->
+                <div class="messanger">
+                    <h4> Messages </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="name-recipient-mark" placeholder="RecipientName if first">
+                        <input class="field" type="text" id="content-mark" placeholder="Content">
+                        <input class="field" type="text" id="id-chat-mark" placeholder="ChatId if exists">
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-first-mark"> send first message </button>
+                        <button class="btn btn-default btn-send" id="send-next-mark"> send next message </button>
+                    </div>
+                </div>
+                <!-- posts -->
+                <div class="posts">
+                    <h4> posts </h4>
+                    <div class="column">
+                        <input class="field" type="text" id="content-post-mark" placeholder="Post content">
+                        <input class="field" type="file" id="content-media-mark" placeholder="Content">
+                    </div>
+                    <div>
+                        <button class="btn btn-default btn-send" id="send-post-mark"> send post </button>
+                    </div>
+                </div>
+                <button class="btn btn-default btn-send" id="subscribe-john-mark"> subscribe john </button>
+                <button class="btn btn-default btn-send" id="subscribe-alexov-mark"> subscribe mark </button>
+            </div>
+            <!-- My wall -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> wall </h4>
+                    <div id="posts-mark">
+                    </div>
+                </div>
+            </div>
+            <!-- My feed -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> feed </h4>
+                    <div id="feed-mark">
+                    </div>
+                </div>
+            </div>
+            <!-- My chatRooms -->
+            <div class="col-md-4">
+                <div class="wall">
+                    <h4> Chatrooms </h4>
+                    <div id="chatrooms-mark">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
